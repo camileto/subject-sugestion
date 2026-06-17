@@ -1,0 +1,48 @@
+{
+  "customer": {
+    "user_id": "456",
+    "name": "Maria",
+    "age": 29,
+    "gender": "f"
+  },
+  "products": [
+    {
+      "name": "Perfume Essence Floral",
+      "category": "beleza",
+      "brand": "Lumière",
+      "price_full": 220,
+      "price_promo": 179,
+      "stock_quantity": 12
+    },
+    {
+      "name": "Vestido Midnight",
+      "category": "moda",
+      "brand": "Aurora",
+      "price_full": 350,
+      "price_promo": null,
+      "stock_quantity": 3
+    },
+    {
+      "name": "Fone Bluetooth ProSound",
+      "category": "eletronicos",
+      "brand": "Voxa",
+      "price_full": 480,
+      "price_promo": 399,
+      "stock_quantity": 7
+    }
+  ],
+  "sent_subjects": [
+    {"subject": "Maria, seu perfume favorito está de volta", "trigger": "scarcity", "opened": true, "clicked": true, "converted": true},
+    {"subject": "Última chance: Vestido Floral com 30% off", "trigger": "offer", "opened": true, "clicked": true, "converted": false},
+    {"subject": "Maria, o fone Bluetooth que você procurava chegou", "trigger": "curiosity", "opened": true, "clicked": false, "converted": false},
+    {"subject": "Só hoje: Perfume Essence com desconto exclusivo", "trigger": "urgency", "opened": false, "clicked": false, "converted": false},
+    {"subject": "Maria, 200 pessoas já compraram esse vestido", "trigger": "social_proof", "opened": true, "clicked": true, "converted": true},
+    {"subject": "Restam só 2 unidades do Smartwatch X", "trigger": "scarcity", "opened": false, "clicked": false, "converted": false},
+    {"subject": "Vai perder essa? Vestido Midnight quase esgotado", "trigger": "loss_aversion", "opened": true, "clicked": false, "converted": false},
+    {"subject": "Maria, que perfume combina com você?", "trigger": "question", "opened": false, "clicked": false, "converted": false},
+    {"subject": "Eletrônicos com até 40% off, Maria", "trigger": "offer", "opened": true, "clicked": true, "converted": true},
+    {"subject": "Maria, seu estilo merece esse vestido novo", "trigger": "personalization", "opened": true, "clicked": false, "converted": false}
+  ],
+  "num_variants": 3,
+  "language": "pt-BR"
+}
