@@ -151,6 +151,37 @@ isn't shared across multiple workers/replicas. That's fine at this volume
 free tier), but if this ever runs at a scale where that matters, swap it
 for a shared store like Redis.
 
+**Example.** A BBQ product, requested a few days before Father's Day:
+
+```json
+{
+  "customer": {"user_id": "us-001", "name": "Jake"},
+  "products": [
+    {"name": "Grill Master BBQ Set", "category": "home", "price_full": 180, "price_promo": 140, "stock_quantity": 15}
+  ],
+  "sent_subjects": [],
+  "country": "US",
+  "num_variants": 3,
+  "language": "en"
+}
+```
+
+```json
+{
+  "customer_id": "us-001",
+  "variants": [
+    {"subject": "Jake, Get Your BBQ Set for $140!", "trigger": "offer", "...": "..."},
+    {"subject": "Only 15 Grill Master Sets Left!", "trigger": "scarcity", "...": "..."},
+    {"subject": "Father's Day is Coming! Perfect BBQ Gift!", "trigger": "curiosity", "...": "..."}
+  ]
+}
+```
+
+The same product requested for a country/date with no occasion in range —
+or a product with no thematic fit to whatever occasion is upcoming, like a
+perfume in that same window — gets no seasonal variant at all; the model
+isn't required to use one just because the field is present.
+
 Response:
 
 ```json
