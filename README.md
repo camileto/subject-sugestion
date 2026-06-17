@@ -102,6 +102,22 @@ the metric closest to real business value, so it's preferred whenever data
 for it exists; open rate is the noisiest signal and only used as a last
 resort.
 
+#### `customer.age` / `customer.gender`
+
+Both optional. When provided, they're passed straight to the LLM as part
+of the customer context and do influence the copy it writes — not just
+whether the name is used, but tone and angle. For example, the same
+anti-aging cream produced *"Revitalize Your Skin Tonight"* for a 19-year-old
+and *"Rediscover Youthful Skin Today"* for a 58-year-old, without any
+explicit instruction asking for that difference.
+
+That's a deliberate trade-off worth knowing about: there's no prompt rule
+telling the model *how* to use age/gender (unlike every other signal in
+this service, which is tightly controlled), so the effect is real but
+unguided — closer to "the model's own judgment" than to a tested feature.
+Omit either field if you'd rather personalization come only from the name
+and real send history.
+
 #### `language`
 
 Free-form string, not validated or restricted by the API — it's passed
