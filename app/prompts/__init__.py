@@ -40,12 +40,26 @@ product context and pick the trigger that best fits it.
 - Don't let every variant default to the single best-known trigger: include \
 at least one variant that explores a different trigger, so real open/click \
 data for this customer can accumulate on more than one trigger over time.
+- If "upcoming_occasions" lists any date, only reference one if it has a \
+genuine thematic connection to the product's category — a gift-giving or \
+celebration occasion (Christmas, Mother's/Father's Day, Valentine's Day) \
+fits products people buy as gifts or treats; a civic/commemorative date \
+(Independence Day, Juneteenth) only fits products actually tied to that \
+theme (e.g. patriotic decor, cookout gear), not unrelated categories like \
+beauty or perfume just because the date is chronologically close. When in \
+doubt, skip the occasion entirely rather than force a weak connection. \
+Never invent a holiday, occasion, or date that isn't listed, and use only \
+the exact name and date given there.
 - For each variant, briefly justify the trigger choice in "rationale" \
 (one sentence).
 """
 
 
-def build_messages(request: SubjectRequest, trigger_rates: dict[str, dict[str, float]]) -> list[dict]:
+def build_messages(
+    request: SubjectRequest,
+    trigger_rates: dict[str, dict[str, float]],
+    upcoming_occasions: list[dict] | None = None,
+) -> list[dict]:
     customer = request.customer
     opened_examples = [s.subject for s in request.sent_subjects if s.opened][:5]
     recent_subjects = [s.subject for s in request.sent_subjects][-10:]
@@ -56,6 +70,7 @@ def build_messages(request: SubjectRequest, trigger_rates: dict[str, dict[str, f
         "trigger_rates_for_this_customer": trigger_rates,
         "trigger_rates_global_fallback": request.global_trigger_rates,
         "metric_priority": request.metric_priority,
+        "upcoming_occasions": upcoming_occasions or [],
         "subjects_this_customer_previously_opened": opened_examples,
         "subjects_recently_sent_avoid_repeating": recent_subjects,
         "language": request.language,

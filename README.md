@@ -1,7 +1,8 @@
 # subject-sugestion
 
 A FastAPI service that suggests email marketing subject lines, personalized
-to each customer's own open/click history, using the OpenAI API.
+to each customer's own open/click/conversion history and (optionally)
+upcoming local holidays and commercial dates, using the OpenAI API.
 
 ## Design decisions
 
@@ -41,6 +42,13 @@ of LLM-powered copywriting tool:
   promotion only if the product data actually includes a promotional price
   lower than the full price — driven by the data, not an absolute rule that
   fights against the "offer" trigger.
+- **No invented holidays, either.** Seasonal subject lines ("don't miss it
+  this Christmas") need a real upcoming date, and LLMs are unreliable at
+  recalling exactly when a country-specific commercial date like Black
+  Friday or Mother's Day falls in a given year. So this service resolves
+  `country` against the Calendarific API and only ever hands the model
+  dates that API actually returned — never lets it guess a holiday or date
+  on its own.
 
 ## API
 
@@ -112,6 +120,37 @@ anything the model itself can write well in works. Examples:
 There's no fixed list enforced in code — these are just examples of values
 that work well, not a guarantee of support.
 
+#### `country`
+
+Optional ISO-3166 country code (e.g. `BR`, `US`). When set, the service
+looks up real upcoming dates — official holidays and commercial
+observances like Black Friday, Mother's/Father's Day, Valentine's Day —
+from the [Calendarific](https://calendarific.com/) API, within
+`OCCASION_LOOKAHEAD_DAYS` (default 30) of today. Results are cached in
+memory per country/year for `OCCASION_CACHE_TTL_SECONDS` (default 24h),
+since a calendar barely changes after publication — this keeps usage far
+under Calendarific's free tier (1,000 requests/day) regardless of traffic.
+
+The LLM is told about these dates as real facts ("Christmas is in 12 days")
+and is instructed to use one only when it has a genuine thematic connection
+to the product's category — a gift occasion fits something people buy as a
+gift, a civic date like Independence Day only fits products actually tied
+to that theme — rather than referencing whatever's chronologically closest.
+It's still never allowed to invent a holiday or date that wasn't actually
+returned by the API, for the same reason it's never allowed to invent an
+open rate.
+
+If `country` is omitted, or the Calendarific call fails for any reason
+(missing `CALENDARIFIC_API_KEY`, network error, rate limit), subject
+generation proceeds normally with no seasonal framing — this is a
+nice-to-have enrichment, never a hard dependency.
+
+The occasion cache is in-memory, per process: it resets on restart and
+isn't shared across multiple workers/replicas. That's fine at this volume
+(each one independently stays well under Calendarific's 1,000 requests/day
+free tier), but if this ever runs at a scale where that matters, swap it
+for a shared store like Redis.
+
 Response:
 
 ```json
@@ -137,6 +176,7 @@ Response:
 pip install -r requirements.txt
 cp .env.example .env
 # edit .env with your OpenAI API key
+# (optional) add a free Calendarific API key if you want to use "country"
 
 set -a; source .env; set +a
 uvicorn app.main:app --reload
@@ -161,5 +201,6 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
-Tests cover the deterministic logic (open-rate stats, cosine similarity,
-prompt construction) without calling the OpenAI API.
+Tests cover the deterministic logic (rate stats, cosine similarity, prompt
+construction, occasion windowing/caching) without calling the OpenAI or
+Calendarific APIs.

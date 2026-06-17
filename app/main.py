@@ -1,12 +1,18 @@
+import logging
+from datetime import date
+
 from fastapi import FastAPI, HTTPException
 
 from .clients.llm_client import generate_variants
 from .clients.openai_client import get_client
-from .config import CHAT_MODEL, MIN_PERSONAL_SAMPLE_SIZE, SIMILARITY_THRESHOLD
+from .config import CHAT_MODEL, MIN_PERSONAL_SAMPLE_SIZE, OCCASION_LOOKAHEAD_DAYS, SIMILARITY_THRESHOLD
 from .models import SubjectRequest, SubjectResponse, SubjectVariant
 from .prompts import build_messages
 from .services.embeddings import max_similarity_to_history
+from .services.occasions import get_upcoming_occasions
 from .services.stats import compute_trigger_rates, compute_trigger_sample_sizes, resolve_rate
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Subject Suggestion API",
@@ -30,7 +36,19 @@ def suggest_subjects(request: SubjectRequest) -> SubjectResponse:
 
     trigger_rates = compute_trigger_rates(request.sent_subjects)
     trigger_sample_sizes = compute_trigger_sample_sizes(request.sent_subjects)
-    messages = build_messages(request, trigger_rates)
+
+    upcoming_occasions: list[dict] = []
+    if request.country:
+        try:
+            upcoming_occasions = get_upcoming_occasions(
+                request.country, date.today(), OCCASION_LOOKAHEAD_DAYS
+            )
+        except Exception:
+            # Calendarific being down/misconfigured shouldn't block subject
+            # generation — seasonal framing is a nice-to-have, not the core feature.
+            logger.warning("Failed to fetch upcoming occasions for country=%s", request.country, exc_info=True)
+
+    messages = build_messages(request, trigger_rates, upcoming_occasions)
     raw_variants = generate_variants(client, messages, model=CHAT_MODEL)
 
     history_subjects = [s.subject for s in request.sent_subjects]
