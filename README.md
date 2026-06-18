@@ -129,8 +129,8 @@ copy assumes:
 
 These are suggestions, not an enforced enum — same philosophy as
 `language`. The difference it makes is real: the same perfume with no
-checkout produced *"Seu perfume especial ainda está no carrinho!"* for
-`abandoned_cart` versus *"Já pensou no seu novo perfume?"* for
+checkout produced *"Sarah, complete your cart for Velvet Bloom!"* for
+`abandoned_cart` versus *"Still thinking about Velvet Bloom?"* for
 `browse_abandonment` — the first assumes near-purchase intent, the second
 doesn't, because the underlying behavior is genuinely different.
 
@@ -250,6 +250,19 @@ The same product requested for a country/date with no occasion in range —
 or a product with no thematic fit to whatever occasion is upcoming, like a
 perfume in that same window — gets no seasonal variant at all; the model
 isn't required to use one just because the field is present.
+
+Two more real outputs, showing the anticipation/urgency split described
+above:
+
+| Occasion | `days_until` | Subject | Preheader |
+|---|---|---|---|
+| Christmas | 18 (anticipation) | *"Don't miss out on Velvet Bloom for Christmas!"* | *"Grab this stunning perfume before the holiday rush."* |
+| Black Friday | 0 (shopping event, day-of urgency) | *"Last Chance for Black Friday Headphones!"* | *"Our wireless headphones are going fast at a great price."* |
+
+Note the Christmas one only happens because `days_until=18` clears the
+`gift_occasion_lead_time_days` default of `2` — closer than that, this
+exact occasion would never have reached the model in the first place (see
+below).
 
 Response:
 
