@@ -28,7 +28,7 @@ app = FastAPI(
         "history, using structured LLM outputs (OpenAI, Anthropic, or "
         "Gemini — caller's choice) and embedding-based duplicate detection."
     ),
-    version="0.1.0",
+    version="0.2.0",
 )
 
 _PROVIDER_MODELS = {
