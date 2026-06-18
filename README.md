@@ -1,4 +1,4 @@
-# subject-sugestion
+# email-subject-suggestion
 
 A FastAPI service that suggests email marketing subject lines, personalized
 to each customer's own open/click/conversion history and (optionally)
@@ -305,8 +305,8 @@ Docs available at `http://localhost:8000/docs`.
 cp .env.example .env
 # edit .env with your OpenAI API key
 
-docker build -t subject-sugestion .
-docker run --rm -p 8000:8000 --env-file .env subject-sugestion
+docker build -t email-subject-suggestion .
+docker run --rm -p 8000:8000 --env-file .env email-subject-suggestion
 ```
 
 ## Tests
