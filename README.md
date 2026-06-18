@@ -108,6 +108,32 @@ the metric closest to real business value, so it's preferred whenever data
 for it exists; open rate is the noisiest signal and only used as a last
 resort.
 
+#### `email_type`
+
+Optional free-form string describing the behavioral context this email is
+part of. Unlike `trigger`, it's not picked by the model — you tell it what
+flow this send belongs to, and it changes how much purchase intent the
+copy assumes:
+
+| Value | When to use |
+|-------|-------------|
+| `abandoned_cart` | Added to cart, didn't check out |
+| `browse_abandonment` | Viewed the product, didn't add to cart |
+| `back_in_stock` | A product they wanted is available again |
+| `price_drop` | A product they viewed/saved just got cheaper |
+| `win_back` | Inactive customer, hasn't opened/bought in a while |
+| `post_purchase_upsell` | Already bought, offering a complement/upgrade |
+| `replenishment` | Consumable product, likely time to reorder |
+| `welcome` | New subscriber/customer, first touch |
+| `standard_campaign` | Generic broadcast, no behavioral trigger |
+
+These are suggestions, not an enforced enum — same philosophy as
+`language`. The difference it makes is real: the same perfume with no
+checkout produced *"Seu perfume especial ainda está no carrinho!"* for
+`abandoned_cart` versus *"Já pensou no seu novo perfume?"* for
+`browse_abandonment` — the first assumes near-purchase intent, the second
+doesn't, because the underlying behavior is genuinely different.
+
 #### `customer.age` / `customer.gender`
 
 Both optional. When provided, they're passed straight to the LLM as part

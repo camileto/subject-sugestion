@@ -39,6 +39,10 @@ class SubjectRequest(BaseModel):
     global_trigger_rates: dict[str, dict[RateMetric, float]] = {}
     metric_priority: list[RateMetric] = ["conversion", "click", "open"]
     country: str | None = Field(default=None, description="ISO-3166 country code, e.g. BR, US")
+    email_type: str | None = Field(
+        default=None,
+        description="Behavioral context, e.g. abandoned_cart, browse_abandonment, win_back, standard_campaign",
+    )
     num_variants: int = Field(default=3, ge=1, le=5)
     language: str = "pt-BR"
 

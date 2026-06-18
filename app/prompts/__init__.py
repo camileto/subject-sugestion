@@ -33,6 +33,18 @@ includes a promotional price lower than the full price. Never invent an offer.
 {", ".join(VALID_TRIGGERS)}.
 - Personalize with the customer's name when available, naturally \
 (write the actual name, not a "[name]" placeholder).
+- Calibrate framing to "email_type" when it's provided: "abandoned_cart" \
+means the customer already added the product to their cart, so it's fine \
+to reference it directly as waiting for them, with low friction (e.g. \
+"Your [product] is still in your cart") — loss_aversion and urgency fit \
+naturally here. "browse_abandonment" means weaker intent (they only \
+viewed it), so don't assume they want to buy — lean on curiosity or \
+social_proof instead of treating it like a near-purchase. "win_back" or \
+similar re-engagement types mean the customer has been inactive, so \
+acknowledge the gap honestly and favor a stronger incentive if one exists \
+in the product data, rather than a routine tone. "standard_campaign" or no \
+"email_type" at all means there's no specific behavioral signal — write \
+as a regular promotional email with no assumed intent.
 - Never repeat a subject the customer has already received, and vary the \
 wording across the variants you return in this same response.
 - Judge what has historically worked best per trigger using \
@@ -77,6 +89,7 @@ def build_messages(
         "trigger_rates_global_fallback": request.global_trigger_rates,
         "metric_priority": request.metric_priority,
         "upcoming_occasions": upcoming_occasions or [],
+        "email_type": request.email_type,
         "subjects_this_customer_previously_opened": opened_examples,
         "subjects_recently_sent_avoid_repeating": recent_subjects,
         "language": request.language,
