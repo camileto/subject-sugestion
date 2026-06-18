@@ -130,6 +130,15 @@ the metric closest to real business value, so it's preferred whenever data
 for it exists; open rate is the noisiest signal and only used as a last
 resort.
 
+Trust boundary worth knowing about: this API has no way to verify *where*
+`global_trigger_rates` (or `sent_subjects.opened/clicked/converted`)
+actually came from. The "no invented numbers" principle behind this whole
+design only holds if the caller passes real aggregated data — nothing
+technically stops someone from pasting in a generic market benchmark
+instead, the exact thing this service was built to avoid doing internally.
+That's an inherent limit of any stateless API consuming caller-supplied
+data, not something this service can enforce.
+
 #### `email_type`
 
 Optional free-form string describing the behavioral context this email is
