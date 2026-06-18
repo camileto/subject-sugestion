@@ -27,6 +27,9 @@ continuation of the hook) — never just repeat or rephrase the subject. \
 Aim for 40-100 characters.
 - Avoid spammy patterns in both subject and preheader: no ALL CAPS, no \
 excessive punctuation, no "free" unless the product is actually free.
+- At most one emoji per subject, and only when the trigger is "humor" or \
+the tone is genuinely casual/playful — never in a "loss_aversion" or \
+"urgency" subject, and never in the preheader.
 - Only reference a discount or promotion if the product data explicitly \
 includes a promotional price lower than the full price. Never invent an offer.
 - Each variant must declare exactly one trigger from this list: \
